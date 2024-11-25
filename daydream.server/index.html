@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CRUD Operations</title>
+</head>
+<body>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="usersTable">
+            <!-- Users will be listed here -->
+        </tbody>
+    </table>
+    <div style="display:none;">
+        <h2>Add User</h2>
+        <form id="addUserForm">
+            Name: <input type="text" id="name" required><br>
+            Age: <input type="number" id="age" required><br>
+            <button type="submit">Add User</button>
+        </form>
+    </div>
+    
+
+    <script>
+        const origin = 'http:192.168.8.146:3002'
+        document.addEventListener('DOMContentLoaded', function () {
+            fetchUsers();
+        });
+
+        document.getElementById('addUserForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const age = document.getElementById('age').value;
+            addUser(name, age);
+        });
+
+        function fetchUsers() {
+            fetch(origin+'/getusers')
+                .then(response => response.json())
+                .then(data => {
+                    const table = document.getElementById('usersTable');
+                    table.innerHTML = '';
+                    data.forEach(user => {
+                        const row = `<tr>
+          <td>${user.id}</td>
+          <td>${user.name}</td>
+          <td>${user.age}</td>
+          <td>
+            <button onclick="updateUser(${user.id})">Edit</button>
+            <button onclick="deleteUser(${user.id})">Delete</button>
+          </td>
+        </tr>`;
+                        table.innerHTML += row;
+                    });
+                });
+        }
+
+        function addUser(name, age) {
+            fetch(origin +'/adduser', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ name, age }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('User added:', data);
+                    fetchUsers();
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        }
+
+        function updateUser(userId) {
+            // Implement update logic here
+        }
+
+        function deleteUser(userId) {
+            fetch(origin+`/deleteuser/${userId}`, {
+                method: 'DELETE',
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('User deleted:', data);
+                    fetchUsers();
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        }
+    </script>
+</body>
+</html>
