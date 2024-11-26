@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
+const pool = require('../db');
 
-router.get('/get', async (req, res) => {
+router.get('/getall', async (req, res) => {
     const sql = 'SELECT * FROM users';
     pool.query(sql, (error, results) => {
         if (error) throw error;
@@ -9,7 +10,6 @@ router.get('/get', async (req, res) => {
     });
 });
 
-// 添加新用户
 router.post('/add', async (req, res) => {
     const { name, age } = req.body;
     const sql = 'INSERT INTO users (name, age) VALUES (?, ?)';
@@ -19,7 +19,6 @@ router.post('/add', async (req, res) => {
     });
 });
 
-// 更新用户
 router.put('/update/:id', async (req, res) => {
     const { id } = req.params;
     const { name, age } = req.body;
@@ -33,7 +32,6 @@ router.put('/update/:id', async (req, res) => {
     });
 });
 
-// 删除用户
 router.delete('/delete/:id', async (req, res) => {
     const { id } = req.params;
     const sql = 'DELETE FROM users WHERE id = ?';

@@ -1,29 +1,27 @@
 const express = require('express');
-const mysql = require('mysql2');
 const cors = require('cors');
 const users = require('./routes/users')
-
+const files = require('./routes/file')
 
 const app = express();
 const port = 3002;
 
-// ÔÊÐíËùÓÐÓòÃû·ÃÎÊ
 app.use(cors());
 
-// ½âÎöJSONºÍURL±àÂëµÄÇëÇóÌå
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/users',users)
+app.use('/file',files)
 
-// ´´½¨Êý¾Ý¿âÁ¬½Ó³Ø
-const pool = mysql.createPool({
-    host: 'localhost',
-    user: 'root',
-    database: 'new_schema',
-    password: '111111'
-});
+// // èŽ·å–æ‰€æœ‰è®°å½•
+// app.get('/items', (req, res) => {
+//     const sql = 'SELECT * FROM users';
+//     pool.query(sql, (error, results) => {
+//         if (error) throw error;
+//         res.json(results);
+//     });
+//   });
 
-// »ñÈ¡ËùÓÐÓÃ»§
 
 app.listen(port,'192.168.8.146', () => {
     console.log(`Server running on http://localhost:${port}`);

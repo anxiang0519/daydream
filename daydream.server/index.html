@@ -18,7 +18,7 @@
             <!-- Users will be listed here -->
         </tbody>
     </table>
-    <div style="display:none;">
+    <div>
         <h2>Add User</h2>
         <form id="addUserForm">
             Name: <input type="text" id="name" required><br>
@@ -26,7 +26,15 @@
             <button type="submit">Add User</button>
         </form>
     </div>
-    
+    <div>
+        <h2>文件上传</h2>
+        <form action="http:localhost:3002/file/upload" method="post" enctype="multipart/form-data">
+            <label for="file">选择文件:</label>
+            <input type="file" name="file"><br><br>
+            <input type="submit" value="上传文件">
+        </form>
+    </div>
+
 
     <script>
         const origin = 'http:192.168.8.146:3002'
@@ -42,28 +50,28 @@
         });
 
         function fetchUsers() {
-            fetch(origin+'/getusers')
+            fetch(origin + '/users/getall')
                 .then(response => response.json())
                 .then(data => {
                     const table = document.getElementById('usersTable');
                     table.innerHTML = '';
                     data.forEach(user => {
                         const row = `<tr>
-          <td>${user.id}</td>
-          <td>${user.name}</td>
-          <td>${user.age}</td>
-          <td>
-            <button onclick="updateUser(${user.id})">Edit</button>
-            <button onclick="deleteUser(${user.id})">Delete</button>
-          </td>
-        </tr>`;
+              <td>${user.id}</td>
+              <td>${user.name}</td>
+              <td>${user.age}</td>
+              <td>
+                <button onclick="updateUser(${user.id})">Edit</button>
+                <button onclick="deleteUser(${user.id})">Delete</button>
+              </td>
+            </tr>`;
                         table.innerHTML += row;
                     });
                 });
         }
 
         function addUser(name, age) {
-            fetch(origin +'/adduser', {
+            fetch(origin + '/users/add', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -85,7 +93,7 @@
         }
 
         function deleteUser(userId) {
-            fetch(origin+`/deleteuser/${userId}`, {
+            fetch(origin + `/users/delete/${userId}`, {
                 method: 'DELETE',
             })
                 .then(response => response.json())
